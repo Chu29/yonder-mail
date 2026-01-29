@@ -17,9 +17,12 @@ const Header = () => {
 
   return (
     <header className="bg-[#f9fafc] border-b border-solid border-[#e2e8f0] sticky top-0 z-50">
-      <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 max-w-7xl mx-auto">
+      <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 max-w-360 mx-auto">
         {/* Logo */}
-        <div className="shrink-0">
+        <div
+          className="shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
+          onClick={() => navigate("/")}
+        >
           <img
             src="../src/assets/nav-logo.svg"
             alt="yonder logo"
