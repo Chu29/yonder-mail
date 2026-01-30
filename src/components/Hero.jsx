@@ -4,7 +4,7 @@ const Hero = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="bg-[#f9fafc] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
+    <section className="bg-[#f9fafc] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 border-b border-b-zinc-200 ">
       <div className="max-w-4xl mx-auto">
         {/* Text Content */}
         <div className="text-center mb-12 sm:mb-16 lg:mb-20">
