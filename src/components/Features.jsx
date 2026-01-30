@@ -1,3 +1,4 @@
+import { CalendarClock, MailCheck, Video } from "lucide-react";
 import FeaturesCard from "./atoms/FeaturesCard";
 
 const Features = () => {
@@ -14,17 +15,17 @@ const Features = () => {
       {/* Features Cards */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         <FeaturesCard
-          icon="/path/to/icon1.png"
+          icon={<Video className="w-8 h-8 text-[#6467f2]" />}
           title="Record"
           description="Use your webcam or phone to record a heartfelt video message to your future self."
         />
         <FeaturesCard
-          icon="/path/to/icon2.png"
+          icon={<CalendarClock className="w-8 h-8 text-[#6467f2]" />}
           title="Schedule"
           description="Choose any date in the future 1 month, 3 months, or even 6 months from today."
         />
         <FeaturesCard
-          icon="/path/to/icon3.png"
+          icon={<MailCheck className="w-8 h-8 text-[#6467f2]" />}
           title="Receive"
           description="On your chosen date, we'll send a private link to your message directly to your inbox."
         />
