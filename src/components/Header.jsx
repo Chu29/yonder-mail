@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router";
 
 const Header = () => {
   // router
@@ -33,18 +33,18 @@ const Header = () => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-4 lg:gap-8">
           <ul className="flex items-center gap-4 lg:gap-8">
-            <li
+            <NavLink
+              to="/about"
               className="text-[#111118] text-base lg:text-lg font-medium hover:text-[#6467f2] transition-colors cursor-pointer"
-              onClick={() => handleNavClick("/about")}
             >
               About
-            </li>
-            <li
+            </NavLink>
+            <NavLink
+              to="/faqs"
               className="text-[#111118] text-base lg:text-lg font-medium hover:text-[#6467f2] transition-colors cursor-pointer"
-              onClick={() => handleNavClick("/faqs")}
             >
               FAQs
-            </li>
+            </NavLink>
           </ul>
           <button
             className="bg-[#6467f2] h-10 lg:h-11 px-4 lg:px-6 rounded-md text-white text-base lg:text-lg font-medium cursor-pointer hover:bg-[#5456d4] transition-colors whitespace-nowrap"
