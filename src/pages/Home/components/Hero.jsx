@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import heroImage from "../../../assets/hero-image.png";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const Hero = () => {
         {/* Hero Image */}
         <div className="rounded-2xl overflow-hidden shadow-lg relative">
           <img
-            src="../src/assets/hero-image.png"
+            src={heroImage}
             alt="Recording devices setup"
             className="w-full h-full lg:h-137.5 object-cover"
           />

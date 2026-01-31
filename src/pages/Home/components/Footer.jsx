@@ -1,5 +1,5 @@
 import React from "react";
-import { SOCIAL_LINKS } from "../utils/constants";
+import { SOCIAL_LINKS } from "../../../utils/constants";
 
 const Footer = () => {
   return (

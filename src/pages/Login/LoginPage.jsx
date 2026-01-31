@@ -1,5 +1,5 @@
-import SigninForm from "../components/SigninForm";
-import yonderLogo from "../assets/nav-logo.svg";
+import SigninForm from "./components/SigninForm";
+import yonderLogo from "../../assets/nav-logo.svg";
 
 const LoginPage = () => {
   return (

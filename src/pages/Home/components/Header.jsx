@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router";
+import navLogo from "../../../assets/nav-logo.svg";
 
 const Header = () => {
   // router
@@ -24,7 +25,7 @@ const Header = () => {
           onClick={() => navigate("/")}
         >
           <img
-            src="../src/assets/nav-logo.svg"
+            src={navLogo}
             alt="yonder logo"
             className="h-12 sm:h-10 lg:h-12 w-auto"
           />

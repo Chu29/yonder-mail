@@ -1,5 +1,5 @@
-import googleLogo from "../assets/google_logo.svg";
-import iosLogo from "../assets/ios_logo.svg";
+import googleLogo from "../../../assets/google_logo.svg";
+import iosLogo from "../../../assets/ios_logo.svg";
 
 const SigninForm = () => {
   return (
