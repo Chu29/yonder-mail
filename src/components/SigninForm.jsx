@@ -14,14 +14,14 @@ const SigninForm = () => {
       <div className="mt-7 space-y-4">
         <button
           type="button"
-          className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
+          className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 cursor-pointer "
         >
           <img src={googleLogo} alt="Google" className="h-5 w-5" />
           Continue with Google
         </button>
         <button
           type="button"
-          className="flex w-full items-center justify-center gap-3 rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+          className="flex w-full items-center justify-center gap-3 rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 cursor-pointer"
         >
           <img src={iosLogo} alt="Apple" className="h-5 w-5" />
           Continue with Apple
