@@ -14,7 +14,7 @@ const ConfirmationHeader = () => {
         </div>
 
         {/* Profile Avatar */}
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-300 flex items-center justify-center text-white font-semibold text-sm">
+        <div className="w-10 h-10 rounded-full bg-linear-to-br from-orange-400 to-orange-300 flex items-center justify-center text-white font-semibold text-sm">
           U
         </div>
       </div>
