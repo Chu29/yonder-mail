@@ -17,7 +17,7 @@ const Hero = () => {
             cherish years from now.
           </p>
           <button
-            onClick={() => navigate("/record")}
+            onClick={() => navigate("/recording")}
             className="bg-[#6467f2] hover:bg-[#5456d4] transition-colors text-white font-semibold py-3 px-8 sm:py-4 sm:px-10 rounded-md text-base sm:text-lg cursor-pointer"
           >
             Record your message
