@@ -4,6 +4,8 @@ import LoginPage from "./pages/Login/LoginPage";
 import RecordingPage from "./pages/Recording/RecordingPage";
 import PreviewPage from "./pages/Preview/PreviewPage";
 import SchedulePage from "./pages/Schedule/SchedulePage";
+import ConfirmationPage from "./pages/Confirmation/ConfirmationPage";
+import MyMessagesPage from "./pages/MyMessages/MyMessagesPage";
 
 const App = () => {
   return (
@@ -14,6 +16,8 @@ const App = () => {
         <Route path="/recording" element={<RecordingPage />} />
         <Route path="/preview" element={<PreviewPage />} />
         <Route path="/schedule" element={<SchedulePage />} />
+        <Route path="/confirmation" element={<ConfirmationPage />} />
+        <Route path="/messages" element={<MyMessagesPage />} />
       </Routes>
     </BrowserRouter>
   );
