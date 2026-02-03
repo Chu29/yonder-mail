@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import heroImage from "../../../assets/hero-image.png";
 
 const Hero = () => {
@@ -18,7 +18,7 @@ const Hero = () => {
           </p>
           <button
             onClick={() => navigate("/recording")}
-            className="bg-[#6467f2] hover:bg-[#5456d4] transition-colors text-white font-semibold py-3 px-8 sm:py-4 sm:px-10 rounded-md text-base sm:text-lg cursor-pointer"
+            className="inline-block bg-linear-to-r from-[#6467f2] to-[#5456d4] hover:from-[#5456d4] hover:to-[#4445c0] transition text-white font-bold py-4 px-8 sm:py-4 sm:px-10 rounded-lg text-base sm:text-lg cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
           >
             Record your message
           </button>

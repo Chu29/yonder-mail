@@ -13,8 +13,8 @@ const CTA = () => {
           lifetime.
         </p>
         <NavLink
-          to="/record"
-          className="inline-block bg-[#ffffff] text-[#6467f2] px-5 sm:px-6 py-2.5 sm:py-3 rounded-md text-base sm:text-lg font-extrabold hover:bg-zinc-100 transition"
+          to="/recording"
+          className="inline-block bg-white text-[#6467f2] px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-bold hover:bg-gray-50 transition shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
         >
           Start Recording Now
         </NavLink>
