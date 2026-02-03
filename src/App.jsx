@@ -17,7 +17,7 @@ const App = () => {
         <Route path="/preview" element={<PreviewPage />} />
         <Route path="/schedule" element={<SchedulePage />} />
         <Route path="/confirmation" element={<ConfirmationPage />} />
-        <Route path="/messages" element={<MyMessagesPage />} />
+        <Route path="/my-messages" element={<MyMessagesPage />} />
       </Routes>
     </BrowserRouter>
   );
