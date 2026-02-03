@@ -1,9 +1,9 @@
-import { Calendar, Clock, Mail, MessageCircle, Lock, Info } from "lucide-react";
+import { Calendar, Mail, MessageSquareMore, Lock, Info } from "lucide-react";
 import { useState } from "react";
-// import { useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 const ScheduleForm = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [deliveryDate, setDeliveryDate] = useState("2025-06-12");
   const [deliveryTime, setDeliveryTime] = useState("09:00");
   const [deliveryMethod, setDeliveryMethod] = useState("email");
@@ -12,6 +12,7 @@ const ScheduleForm = () => {
     e.preventDefault();
     // Handle form submission
     console.log({ deliveryDate, deliveryTime, deliveryMethod });
+    navigate("/my-messages");
   };
 
   return (
@@ -93,7 +94,7 @@ const ScheduleForm = () => {
                 disabled
                 className="w-5 h-5 text-gray-400"
               />
-              <MessageCircle size={24} className="text-gray-400" />
+              <MessageSquareMore size={24} className="text-gray-400" />
               <div className="flex-1">
                 <p className="font-semibold text-gray-500">WhatsApp</p>
                 <p className="text-sm text-gray-500">Direct messaging</p>

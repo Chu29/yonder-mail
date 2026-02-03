@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router";
 import googleLogo from "../../../assets/google_logo.svg";
 import iosLogo from "../../../assets/ios_logo.svg";
 
 const SigninForm = () => {
+  const navigate = useNavigate();
   return (
     <form className="w-full max-w-md rounded-2xl bg-white px-8 py-10 text-center shadow-[0_10px_40px_rgba(15,23,42,0.08)]">
       <h3 className="text-2xl font-semibold text-slate-900">
@@ -15,6 +17,9 @@ const SigninForm = () => {
         <button
           type="button"
           className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 cursor-pointer "
+          onClick={() => {
+            navigate("/recording");
+          }}
         >
           <img src={googleLogo} alt="Google" className="h-5 w-5" />
           Continue with Google
@@ -22,6 +27,9 @@ const SigninForm = () => {
         <button
           type="button"
           className="flex w-full items-center justify-center gap-3 rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 cursor-pointer"
+          onClick={() => {
+            navigate("/recording");
+          }}
         >
           <img src={iosLogo} alt="Apple" className="h-5 w-5" />
           Continue with Apple

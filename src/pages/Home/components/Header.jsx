@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router";
-import navLogo from "../../../assets/nav-logo.svg";
+import Logo from "../../../components/Logo";
 
 const Header = () => {
   // router
@@ -20,17 +20,7 @@ const Header = () => {
     <header className="bg-[#f9fafc] border-b border-solid border-[#e2e8f0] sticky top-0 z-50">
       <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 max-w-360 mx-auto">
         {/* Logo */}
-        <div
-          className="shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
-          onClick={() => navigate("/")}
-        >
-          <img
-            src={navLogo}
-            alt="yonder logo"
-            className="h-12 sm:h-10 lg:h-12 w-auto"
-          />
-        </div>
-
+        <Logo />
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-4 lg:gap-8">
           <ul className="flex items-center gap-4 lg:gap-8">

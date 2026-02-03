@@ -1,24 +1,12 @@
-import yonderLogo from "../../../assets/nav-logo.svg";
-import { useNavigate } from "react-router";
 import { Bell } from "lucide-react";
+import Logo from "../../../components/Logo";
 
 const MyMessagesHeader = () => {
-  const navigate = useNavigate();
-
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 max-w-360 mx-auto w-full">
         {/* Logo */}
-        <div
-          onClick={() => navigate("/")}
-          className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition"
-        >
-          <img
-            src={yonderLogo}
-            alt="Yonder"
-            className="h-12 sm:h-10 lg:h-12 w-auto"
-          />
-        </div>
+        <Logo />
 
         {/* Right Side - Notifications and Profile */}
         <div className="flex items-center gap-4">
