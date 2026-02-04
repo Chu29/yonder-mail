@@ -4,8 +4,12 @@ import { useNavigate } from "react-router";
 
 const ScheduleForm = () => {
   const navigate = useNavigate();
-  const [deliveryDate, setDeliveryDate] = useState("2025-06-12");
-  const [deliveryTime, setDeliveryTime] = useState("09:00");
+  const [deliveryDate, setDeliveryDate] = useState(
+    new Date().toISOString().split("T")[0],
+  );
+  const [deliveryTime, setDeliveryTime] = useState(
+    new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+  );
   const [deliveryMethod, setDeliveryMethod] = useState("email");
 
   const handleSubmit = (e) => {
