@@ -9,7 +9,7 @@ const Hero = () => {
       <div className="max-w-4xl mx-auto">
         {/* Text Content */}
         <div className="text-center mb-12 sm:mb-16 lg:mb-20">
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-[#111118] mb-4 sm:mb-6">
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-[#111118] mb-4 sm:mb-6 leading-normal">
             A message to your future self
           </h1>
           <p className="text-base sm:text-lg lg:text-xl text-[#64748b] mb-8 sm:mb-10 leading-relaxed">
