@@ -1,10 +1,46 @@
-import React from "react";
+import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import PreviewHeader from "./components/PreviewHeader";
 import VideoPlayer from "./components/VideoPlayer";
 import PreviewActions from "./components/PreviewActions";
 import Footer from "../Home/components/Footer";
+import { useRecording } from "../../context/RecordingContext";
+import { useMessages } from "../../context/MessageContext";
 
 const PreviewPage = () => {
+  const navigate = useNavigate();
+  const { recordedUrl, recordedBlob, isLoadingRecording } = useRecording();
+  const { createMessage } = useMessages();
+  const messageCreatedRef = useRef(false);
+
+  useEffect(() => {
+    // Wait for loading to complete
+    if (isLoadingRecording) return;
+
+    // Redirect if no recording exists after loading
+    if (!recordedUrl) {
+      navigate("/recording");
+      return;
+    }
+
+    // Create message from recording only once
+    if (!messageCreatedRef.current) {
+      createMessage(recordedBlob, recordedUrl);
+      messageCreatedRef.current = true;
+    }
+  }, [recordedUrl, recordedBlob, isLoadingRecording, navigate, createMessage]);
+
+  // Show loading state while checking for recording
+  if (isLoadingRecording) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#6467f2] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your recording...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <PreviewHeader />
