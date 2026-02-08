@@ -1,9 +1,13 @@
 import { Calendar, Mail, MessageSquareMore, Lock, Info } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
+import { useMessages } from "../../../context/MessageContext";
+import { useAuth } from "../../../context/AuthContext";
 
 const ScheduleForm = () => {
   const navigate = useNavigate();
+  const { currentMessage, scheduleMessage } = useMessages();
+  const { user } = useAuth();
   const [deliveryDate, setDeliveryDate] = useState(
     new Date().toISOString().split("T")[0],
   );
@@ -14,9 +18,21 @@ const ScheduleForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log({ deliveryDate, deliveryTime, deliveryMethod });
-    navigate("/my-messages");
+
+    if (!currentMessage) {
+      alert("No recording found. Please record a message first.");
+      navigate("/recording");
+      return;
+    }
+
+    scheduleMessage(currentMessage.id, {
+      deliveryDate,
+      deliveryTime,
+      deliveryMethod,
+      recipientEmail: user?.email || "user@example.com",
+    });
+
+    navigate("/confirmation");
   };
 
   return (
