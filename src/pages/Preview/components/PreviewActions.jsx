@@ -1,14 +1,21 @@
 import { ArrowRight, VideoOff } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
+import { useRecording } from "../../../context/RecordingContext";
 
 const PreviewActions = () => {
   const navigate = useNavigate();
+  const { resetRecording } = useRecording();
+
+  const handleReRecord = () => {
+    resetRecording();
+    navigate("/recording");
+  };
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
       {/* Re-record Button */}
       <button
-        onClick={() => navigate("/recording")}
+        onClick={handleReRecord}
         className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:border-gray-400 transition"
       >
         <VideoOff size={20} />
