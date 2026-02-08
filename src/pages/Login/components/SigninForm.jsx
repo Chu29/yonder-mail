@@ -1,9 +1,37 @@
-import { useNavigate } from "react-router";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 import googleLogo from "../../../assets/google_logo.svg";
 import iosLogo from "../../../assets/ios_logo.svg";
 
 const SigninForm = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleGoogleSignin = async () => {
+    setIsLoading(true);
+    const result = await login("demo@yondermail.com", "demo");
+    setIsLoading(false);
+
+    if (result.success) {
+      navigate("/recording");
+    } else {
+      alert("Sign in failed. Please try again.");
+    }
+  };
+
+  const handleAppleSignin = async () => {
+    setIsLoading(true);
+    const result = await login("demo@yondermail.com", "demo");
+    setIsLoading(false);
+
+    if (result.success) {
+      navigate("/recording");
+    } else {
+      alert("Sign in failed. Please try again.");
+    }
+  };
   return (
     <form className="w-full max-w-md rounded-2xl bg-white px-8 py-10 text-center shadow-[0_10px_40px_rgba(15,23,42,0.08)]">
       <h3 className="text-2xl font-semibold text-slate-900">
@@ -16,23 +44,21 @@ const SigninForm = () => {
       <div className="mt-7 space-y-4">
         <button
           type="button"
-          className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 cursor-pointer "
-          onClick={() => {
-            navigate("/recording");
-          }}
+          className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={handleGoogleSignin}
+          disabled={isLoading}
         >
           <img src={googleLogo} alt="Google" className="h-5 w-5" />
-          Continue with Google
+          {isLoading ? "Signing in..." : "Continue with Google"}
         </button>
         <button
           type="button"
-          className="flex w-full items-center justify-center gap-3 rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 cursor-pointer"
-          onClick={() => {
-            navigate("/recording");
-          }}
+          className="flex w-full items-center justify-center gap-3 rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={handleAppleSignin}
+          disabled={isLoading}
         >
           <img src={iosLogo} alt="Apple" className="h-5 w-5" />
-          Continue with Apple
+          {isLoading ? "Signing in..." : "Continue with Apple"}
         </button>
       </div>
 
