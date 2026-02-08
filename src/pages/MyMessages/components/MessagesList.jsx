@@ -1,8 +1,11 @@
-import { Lock } from "lucide-react";
-import { useState } from "react";
+import { Lock, Trash2 } from "lucide-react";
+import { useMessages } from "../../../context/MessageContext";
 
 const MessagesList = ({ activeTab }) => {
-  const [messages] = useState([
+  const { messages: userMessages, deleteMessage } = useMessages();
+
+  // Use actual messages or fallback to mock data for demo
+  const mockMessages = [
     {
       id: 1,
       title: "Birthday Wish 2026",
@@ -38,7 +41,19 @@ const MessagesList = ({ activeTab }) => {
       createdDate: "2023-05-01",
       status: "delivered",
     },
-  ]);
+  ];
+
+  // Map user messages to expected format
+  const formattedUserMessages = userMessages.map((msg) => ({
+    id: msg.id,
+    title: `Message from ${new Date(msg.createdAt).toLocaleDateString()}`,
+    deliveryDate: msg.deliveryDate,
+    createdDate: msg.createdAt?.split("T")[0],
+    status: msg.status,
+    videoUrl: msg.videoUrl,
+  }));
+
+  const allMessages = [...formattedUserMessages, ...mockMessages];
 
   const calculateTimeUntilDelivery = (deliveryDate) => {
     const today = new Date("2026-02-01");
@@ -56,7 +71,18 @@ const MessagesList = ({ activeTab }) => {
     return `DELIVERING IN ${diffDays} DAY${diffDays > 1 ? "S" : ""}`;
   };
 
-  const filteredMessages = messages.filter((msg) => msg.status === activeTab);
+  const filteredMessages = allMessages.filter((msg) => {
+    if (activeTab === "scheduled") return msg.status === "scheduled";
+    if (activeTab === "delivered")
+      return msg.status === "sent" || msg.status === "delivered";
+    return false;
+  });
+
+  const handleDelete = (messageId) => {
+    if (window.confirm("Are you sure you want to delete this message?")) {
+      deleteMessage(messageId);
+    }
+  };
 
   return (
     <>
@@ -75,9 +101,23 @@ const MessagesList = ({ activeTab }) => {
 
               {/* Card Info */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-[#6467f2] transition">
-                  {message.title}
-                </h3>
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-[#6467f2] transition flex-1">
+                    {message.title}
+                  </h3>
+                  {message.videoUrl && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(message.id);
+                      }}
+                      className="text-red-500 hover:text-red-700 transition"
+                      title="Delete message"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
+                </div>
                 <p className="text-xs font-bold text-[#6467f2] mb-1">
                   {calculateTimeUntilDelivery(message.deliveryDate)}
                 </p>
