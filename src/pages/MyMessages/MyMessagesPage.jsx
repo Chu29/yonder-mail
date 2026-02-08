@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import MyMessagesHeader from "./components/MyMessagesHeader";
 import MessagesList from "./components/MessagesList";
 import Footer from "../Home/components/Footer";

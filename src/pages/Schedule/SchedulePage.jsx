@@ -1,4 +1,3 @@
-import React from "react";
 import ScheduleHeader from "./components/ScheduleHeader";
 import ScheduleForm from "./components/ScheduleForm";
 import Footer from "../Home/components/Footer";
