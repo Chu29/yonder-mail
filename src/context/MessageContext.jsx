@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const MessageContext = createContext(null);
@@ -15,12 +21,18 @@ export const useMessages = () => {
 export const MessageProvider = ({ children }) => {
   const [messages, setMessages] = useLocalStorage("yonder_messages", []);
   const [currentMessage, setCurrentMessage] = useState(null);
-  const [_isLoading, _setIsLoading] = useState(false);
+
+  // Ensure messages is always an array (memoized)
+  const safeMessages = useMemo(
+    () => (Array.isArray(messages) ? messages : []),
+    [messages],
+  );
 
   const createMessage = useCallback((videoBlob, videoUrl) => {
     const message = {
       id: Date.now().toString(),
-      videoBlob,
+      // Don't store blob in localStorage - keep it only in memory/IndexedDB
+      videoBlob: videoBlob,
       videoUrl,
       createdAt: new Date().toISOString(),
       status: "draft", // draft, scheduled, sent, delivered
@@ -32,22 +44,38 @@ export const MessageProvider = ({ children }) => {
 
   const scheduleMessage = useCallback(
     (messageId, scheduleData) => {
-      const { deliveryDate, deliveryTime, deliveryMethod, recipientEmail } =
-        scheduleData;
+      const {
+        title,
+        deliveryDate,
+        deliveryTime,
+        deliveryMethod,
+        recipientEmail,
+      } = scheduleData;
 
       setCurrentMessage((current) => {
+        // Create message without videoBlob for localStorage
         const updatedMessage = {
-          ...current,
           id: messageId || current?.id,
+          title: title || "Untitled Message",
+          videoUrl: current?.videoUrl,
           deliveryDate,
           deliveryTime,
           deliveryMethod,
           recipientEmail: recipientEmail || "user@example.com",
+          createdAt: current?.createdAt || new Date().toISOString(),
           scheduledAt: new Date().toISOString(),
           status: "scheduled",
         };
 
-        setMessages((prev) => [...prev, updatedMessage]);
+        // Check for duplicates before adding
+        setMessages((prev) => {
+          const exists = prev.some((msg) => msg.id === updatedMessage.id);
+          if (exists) {
+            console.warn("Message already scheduled, skipping duplicate");
+            return prev;
+          }
+          return [...prev, updatedMessage];
+        });
         return null;
       });
 
@@ -75,31 +103,50 @@ export const MessageProvider = ({ children }) => {
   );
 
   const getScheduledMessages = useCallback(() => {
-    return messages.filter((msg) => msg.status === "scheduled");
-  }, [messages]);
+    return safeMessages.filter((msg) => msg.status === "scheduled");
+  }, [safeMessages]);
 
   const getSentMessages = useCallback(() => {
-    return messages.filter(
+    return safeMessages.filter(
       (msg) => msg.status === "sent" || msg.status === "delivered",
     );
-  }, [messages]);
+  }, [safeMessages]);
 
   const clearCurrentMessage = useCallback(() => {
     setCurrentMessage(null);
   }, []);
 
-  const value = {
-    messages,
-    currentMessage,
-    isLoading: _isLoading,
-    createMessage,
-    scheduleMessage,
-    deleteMessage,
-    updateMessageStatus,
-    getScheduledMessages,
-    getSentMessages,
-    clearCurrentMessage,
-  };
+  const clearAllMessages = useCallback(() => {
+    setMessages([]);
+    setCurrentMessage(null);
+  }, [setMessages]);
+
+  const value = useMemo(
+    () => ({
+      messages: safeMessages,
+      currentMessage,
+      createMessage,
+      scheduleMessage,
+      deleteMessage,
+      updateMessageStatus,
+      getScheduledMessages,
+      getSentMessages,
+      clearCurrentMessage,
+      clearAllMessages,
+    }),
+    [
+      safeMessages,
+      currentMessage,
+      createMessage,
+      scheduleMessage,
+      deleteMessage,
+      updateMessageStatus,
+      getScheduledMessages,
+      getSentMessages,
+      clearCurrentMessage,
+      clearAllMessages,
+    ],
+  );
 
   return (
     <MessageContext.Provider value={value}>{children}</MessageContext.Provider>
