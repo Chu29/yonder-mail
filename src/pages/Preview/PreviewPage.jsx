@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import PreviewHeader from "./components/PreviewHeader";
+import AppHeader from "../../components/AppHeader";
 import VideoPlayer from "./components/VideoPlayer";
 import PreviewActions from "./components/PreviewActions";
 import Footer from "../Home/components/Footer";
@@ -43,7 +43,7 @@ const PreviewPage = () => {
   }
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <PreviewHeader />
+      <AppHeader />
 
       <div className="flex-1 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* Title Section */}
