@@ -1,11 +1,11 @@
-import ScheduleHeader from "./components/ScheduleHeader";
+import AppHeader from "../../components/AppHeader";
 import ScheduleForm from "./components/ScheduleForm";
 import Footer from "../Home/components/Footer";
 
 const SchedulePage = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <ScheduleHeader />
+      <AppHeader />
 
       <div className="flex-1 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 w-full">
         {/* Title */}
