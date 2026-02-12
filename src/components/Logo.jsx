@@ -1,13 +1,18 @@
-import React from "react";
+import { memo, useCallback } from "react";
 import { useNavigate } from "react-router";
 import navLogo from "../assets/nav-logo.svg";
 
 const Logo = () => {
   const navigate = useNavigate();
+
+  const handleClick = useCallback(() => {
+    navigate("/");
+  }, [navigate]);
+
   return (
     <div
       className="shrink-0 cursor-pointer hover:scale-110 transition-transform duration-300"
-      onClick={() => navigate("/")}
+      onClick={handleClick}
     >
       <img
         src={navLogo}
@@ -18,4 +23,4 @@ const Logo = () => {
   );
 };
 
-export default Logo;
+export default memo(Logo);
