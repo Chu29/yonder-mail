@@ -1,5 +1,12 @@
-import { Calendar, Mail, MessageSquareMore, Lock, Info } from "lucide-react";
-import { useState } from "react";
+import {
+  Calendar,
+  Mail,
+  MessageSquareMore,
+  Lock,
+  Info,
+  PenLine,
+} from "lucide-react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMessages } from "../../../context/MessageContext";
 import { useAuth } from "../../../context/AuthContext";
@@ -8,6 +15,7 @@ const ScheduleForm = () => {
   const navigate = useNavigate();
   const { currentMessage, scheduleMessage } = useMessages();
   const { user } = useAuth();
+  const [messageTitle, setMessageTitle] = useState("");
   const [deliveryDate, setDeliveryDate] = useState(
     new Date().toISOString().split("T")[0],
   );
@@ -15,25 +23,52 @@ const ScheduleForm = () => {
     new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
   );
   const [deliveryMethod, setDeliveryMethod] = useState("email");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
 
-    if (!currentMessage) {
-      alert("No recording found. Please record a message first.");
-      navigate("/recording");
-      return;
-    }
+      // Prevent double submission
+      if (isSubmitting) {
+        return;
+      }
 
-    scheduleMessage(currentMessage.id, {
+      if (!currentMessage) {
+        alert("No recording found. Please record a message first.");
+        navigate("/recording");
+        return;
+      }
+
+      if (!messageTitle.trim()) {
+        alert("Please give your message a title.");
+        return;
+      }
+
+      setIsSubmitting(true);
+
+      scheduleMessage(currentMessage.id, {
+        title: messageTitle.trim(),
+        deliveryDate,
+        deliveryTime,
+        deliveryMethod,
+        recipientEmail: user?.email || "user@example.com",
+      });
+
+      navigate("/confirmation");
+    },
+    [
+      isSubmitting,
+      currentMessage,
+      messageTitle,
       deliveryDate,
       deliveryTime,
       deliveryMethod,
-      recipientEmail: user?.email || "user@example.com",
-    });
-
-    navigate("/confirmation");
-  };
+      user?.email,
+      scheduleMessage,
+      navigate,
+    ],
+  );
 
   return (
     <div className="space-y-6">
@@ -47,6 +82,30 @@ const ScheduleForm = () => {
 
       {/* Form Card */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8 space-y-6">
+        {/* Message Title */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-900 mb-2">
+            Message Title *
+          </label>
+          <div className="relative">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2">
+              <PenLine size={18} className="text-gray-400" />
+            </div>
+            <input
+              type="text"
+              value={messageTitle}
+              onChange={(e) => setMessageTitle(e.target.value)}
+              placeholder="e.g., Birthday Wish 2027, Note to Future Self..."
+              maxLength={60}
+              className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6467f2] focus:border-transparent outline-none transition"
+              required
+            />
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            {messageTitle.length}/60 characters
+          </p>
+        </div>
+
         {/* Date and Time Inputs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Delivery Date */}
