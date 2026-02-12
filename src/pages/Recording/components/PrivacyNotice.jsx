@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Lock } from "lucide-react";
 
 const PrivacyNotice = () => {
@@ -14,4 +15,4 @@ const PrivacyNotice = () => {
   );
 };
 
-export default PrivacyNotice;
+export default memo(PrivacyNotice);
