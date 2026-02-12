@@ -5,6 +5,7 @@ import {
   useRef,
   useCallback,
   useEffect,
+  useMemo,
 } from "react";
 import {
   saveRecording,
@@ -36,6 +37,25 @@ export const RecordingProvider = ({ children }) => {
 
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
+
+  // Helper function to setup MediaRecorder (extracted to avoid duplication)
+  const setupMediaRecorder = useCallback((mediaStream, onStopCallback) => {
+    const mediaRecorder = new MediaRecorder(mediaStream, {
+      mimeType: "video/webm;codecs=vp9,opus",
+    });
+
+    mediaRecorderRef.current = mediaRecorder;
+
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data && event.data.size > 0) {
+        chunksRef.current.push(event.data);
+      }
+    };
+
+    mediaRecorder.onstop = onStopCallback;
+
+    return mediaRecorder;
+  }, []);
 
   // Load recording from IndexedDB on mount
   useEffect(() => {
@@ -72,21 +92,9 @@ export const RecordingProvider = ({ children }) => {
       });
 
       setStream(mediaStream);
-
-      const mediaRecorder = new MediaRecorder(mediaStream, {
-        mimeType: "video/webm;codecs=vp9,opus",
-      });
-
-      mediaRecorderRef.current = mediaRecorder;
       chunksRef.current = [];
 
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data && event.data.size > 0) {
-          chunksRef.current.push(event.data);
-        }
-      };
-
-      mediaRecorder.onstop = async () => {
+      const mediaRecorder = setupMediaRecorder(mediaStream, async () => {
         const blob = new Blob(chunksRef.current, { type: "video/webm" });
         const url = URL.createObjectURL(blob);
         setRecordedBlob(blob);
@@ -101,11 +109,9 @@ export const RecordingProvider = ({ children }) => {
         }
 
         // Stop all tracks
-        if (mediaStream) {
-          mediaStream.getTracks().forEach((track) => track.stop());
-        }
+        mediaStream.getTracks().forEach((track) => track.stop());
         setStream(null);
-      };
+      });
 
       mediaRecorder.start(1000); // Capture data every second
       setIsRecording(true);
@@ -114,7 +120,7 @@ export const RecordingProvider = ({ children }) => {
       console.error("Error starting recording:", err);
       setError(err.message || "Failed to access camera/microphone");
     }
-  }, [facingMode]);
+  }, [facingMode, setupMediaRecorder]);
 
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current && isRecording) {
@@ -192,30 +198,16 @@ export const RecordingProvider = ({ children }) => {
         setStream(mediaStream);
 
         // If was recording, restart recording with new stream
-        if (wasRecording && mediaRecorderRef.current) {
-          const mediaRecorder = new MediaRecorder(mediaStream, {
-            mimeType: "video/webm;codecs=vp9,opus",
-          });
-
-          mediaRecorderRef.current = mediaRecorder;
-
-          mediaRecorder.ondataavailable = (event) => {
-            if (event.data && event.data.size > 0) {
-              chunksRef.current.push(event.data);
-            }
-          };
-
-          mediaRecorder.onstop = () => {
+        if (wasRecording) {
+          const mediaRecorder = setupMediaRecorder(mediaStream, () => {
             const blob = new Blob(chunksRef.current, { type: "video/webm" });
             const url = URL.createObjectURL(blob);
             setRecordedBlob(blob);
             setRecordedUrl(url);
 
-            if (mediaStream) {
-              mediaStream.getTracks().forEach((track) => track.stop());
-            }
+            mediaStream.getTracks().forEach((track) => track.stop());
             setStream(null);
-          };
+          });
 
           mediaRecorder.start(1000);
           setDuration(currentDuration);
@@ -229,26 +221,45 @@ export const RecordingProvider = ({ children }) => {
         setError(err.message || "Failed to flip camera");
       }
     }
-  }, [facingMode, stream, isRecording, isPaused, duration]);
+  }, [facingMode, stream, isRecording, isPaused, duration, setupMediaRecorder]);
 
-  const value = {
-    isRecording,
-    isPaused,
-    recordedBlob,
-    recordedUrl,
-    stream,
-    error,
-    duration,
-    facingMode,
-    isLoadingRecording,
-    setDuration,
-    startRecording,
-    stopRecording,
-    pauseRecording,
-    resumeRecording,
-    resetRecording,
-    flipCamera,
-  };
+  const value = useMemo(
+    () => ({
+      isRecording,
+      isPaused,
+      recordedBlob,
+      recordedUrl,
+      stream,
+      error,
+      duration,
+      facingMode,
+      isLoadingRecording,
+      setDuration,
+      startRecording,
+      stopRecording,
+      pauseRecording,
+      resumeRecording,
+      resetRecording,
+      flipCamera,
+    }),
+    [
+      isRecording,
+      isPaused,
+      recordedBlob,
+      recordedUrl,
+      stream,
+      error,
+      duration,
+      facingMode,
+      isLoadingRecording,
+      startRecording,
+      stopRecording,
+      pauseRecording,
+      resumeRecording,
+      resetRecording,
+      flipCamera,
+    ],
+  );
 
   return (
     <RecordingContext.Provider value={value}>
