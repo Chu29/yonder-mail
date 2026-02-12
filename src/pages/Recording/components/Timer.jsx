@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecording } from "../../../context/RecordingContext";
 
@@ -7,32 +7,45 @@ const Timer = ({ maxDuration = 300 }) => {
   const { isRecording, isPaused, duration, setDuration, stopRecording } =
     useRecording();
 
+  // Consolidated effect for timer and auto-stop
   useEffect(() => {
     let interval;
+
+    // Handle timer increment
     if (isRecording && !isPaused && duration < maxDuration) {
       interval = setInterval(() => {
         setDuration((prev) => (prev < maxDuration ? prev + 1 : maxDuration));
       }, 1000);
     }
-    return () => clearInterval(interval);
-  }, [isRecording, isPaused, duration, maxDuration, setDuration]);
 
-  // Auto-stop when reaching max duration
-  useEffect(() => {
+    // Auto-stop when reaching max duration
     if (isRecording && duration >= maxDuration) {
       stopRecording();
       navigate("/preview");
     }
-  }, [duration, maxDuration, isRecording, stopRecording, navigate]);
 
-  const formatTime = (seconds) => {
+    return () => clearInterval(interval);
+  }, [
+    isRecording,
+    isPaused,
+    duration,
+    maxDuration,
+    setDuration,
+    stopRecording,
+    navigate,
+  ]);
+
+  const formatTime = useCallback((seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
+  }, []);
 
-  const maxMins = Math.floor(maxDuration / 60);
-  const maxSecs = maxDuration % 60;
+  const maxTimeFormatted = useMemo(() => {
+    const maxMins = Math.floor(maxDuration / 60);
+    const maxSecs = maxDuration % 60;
+    return `${maxMins.toString().padStart(2, "0")}:${maxSecs.toString().padStart(2, "0")}`;
+  }, [maxDuration]);
 
   return (
     <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-gray-300 shadow-sm">
@@ -40,8 +53,7 @@ const Timer = ({ maxDuration = 300 }) => {
         <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
       )}
       <span className="font-mono font-semibold text-gray-800">
-        {formatTime(duration)} / {maxMins.toString().padStart(2, "0")}:
-        {maxSecs.toString().padStart(2, "0")}
+        {formatTime(duration)} / {maxTimeFormatted}
       </span>
     </div>
   );
