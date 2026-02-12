@@ -1,12 +1,12 @@
 import React from "react";
-import ConfirmationHeader from "./components/ConfirmationHeader";
+import AppHeader from "../../components/AppHeader";
 import ConfirmationContent from "./components/ConfirmationContent";
 import Footer from "../Home/components/Footer";
 
 const ConfirmationPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <ConfirmationHeader />
+      <AppHeader />
 
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <ConfirmationContent />
