@@ -1,15 +1,20 @@
 import { ArrowRight, VideoOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useCallback } from "react";
 import { useRecording } from "../../../context/RecordingContext";
 
 const PreviewActions = () => {
   const navigate = useNavigate();
   const { resetRecording } = useRecording();
 
-  const handleReRecord = () => {
+  const handleReRecord = useCallback(() => {
     resetRecording();
     navigate("/recording");
-  };
+  }, [resetRecording, navigate]);
+
+  const handleContinue = useCallback(() => {
+    navigate("/schedule");
+  }, [navigate]);
 
   return (
     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
@@ -24,7 +29,7 @@ const PreviewActions = () => {
 
       {/* Continue Button */}
       <button
-        onClick={() => navigate("/schedule")}
+        onClick={handleContinue}
         className="flex items-center gap-2 px-8 py-3 bg-[#6467f2] text-white font-semibold rounded-xl hover:bg-[#5456d4] transition shadow-lg hover:shadow-xl transform hover:scale-105"
       >
         <span>Continue</span>
