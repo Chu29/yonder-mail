@@ -1,5 +1,5 @@
 import { Play, Pause, Volume2, Maximize, Minimize } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useRecording } from "../../../context/RecordingContext";
 
 const VideoPlayer = () => {
@@ -12,91 +12,80 @@ const VideoPlayer = () => {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
 
+  // Memoize helper functions
+  const getDuration = useCallback((video) => {
+    let videoDuration = video.duration;
+    // If duration is not available, try seekable range
+    if (
+      !isFinite(videoDuration) &&
+      video.seekable &&
+      video.seekable.length > 0
+    ) {
+      videoDuration = video.seekable.end(0);
+    }
+    return videoDuration && isFinite(videoDuration) && videoDuration > 0
+      ? videoDuration
+      : 0;
+  }, []);
+
+  const formatTime = useCallback((seconds) => {
+    if (!isFinite(seconds) || isNaN(seconds)) {
+      return "0:00";
+    }
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  }, []);
+
+  // Consolidated effect for all video event listeners
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    const updateProgress = () => {
-      // Try to get duration from multiple sources
-      let videoDuration = video.duration;
-
-      // If duration is not available, try seekable range
-      if (
-        !isFinite(videoDuration) &&
-        video.seekable &&
-        video.seekable.length > 0
-      ) {
-        videoDuration = video.seekable.end(0);
+    const updateDuration = () => {
+      const videoDuration = getDuration(video);
+      if (videoDuration > 0) {
+        setDuration(videoDuration);
       }
+    };
 
-      // Update duration if we got it
-      if (videoDuration && isFinite(videoDuration) && videoDuration > 0) {
+    const updateProgress = () => {
+      const videoDuration = getDuration(video);
+      if (videoDuration > 0) {
         setDuration(videoDuration);
         const progress = (video.currentTime / videoDuration) * 100 || 0;
         setProgress(progress);
       }
-
       setCurrentTime(video.currentTime);
     };
 
-    const updateDuration = () => {
-      let videoDuration = video.duration;
-
-      // If duration is not available, try seekable range
-      if (
-        !isFinite(videoDuration) &&
-        video.seekable &&
-        video.seekable.length > 0
-      ) {
-        videoDuration = video.seekable.end(0);
-      }
-
-      if (videoDuration && isFinite(videoDuration) && videoDuration > 0) {
-        setDuration(videoDuration);
-      }
-    };
-
-    const onLoadedMetadata = () => {
-      updateDuration();
-    };
-
-    const onLoadedData = () => {
-      updateDuration();
-    };
-
-    const onDurationChange = () => {
-      updateDuration();
-    };
-
-    const onCanPlay = () => {
-      updateDuration();
-    };
-
-    const onEnded = () => {
-      setIsPlaying(false);
-    };
-
-    const onPlay = () => {
-      setIsPlaying(true);
-    };
-
-    const onPause = () => {
-      setIsPlaying(false);
-    };
-
-    const onFullscreenChange = () => {
+    const handleEnded = () => setIsPlaying(false);
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    const handleFullscreenChange = () =>
       setIsFullscreen(!!document.fullscreenElement);
-    };
 
-    video.addEventListener("timeupdate", updateProgress);
-    video.addEventListener("loadedmetadata", onLoadedMetadata);
-    video.addEventListener("loadeddata", onLoadedData);
-    video.addEventListener("durationchange", onDurationChange);
-    video.addEventListener("canplay", onCanPlay);
-    video.addEventListener("ended", onEnded);
-    video.addEventListener("play", onPlay);
-    video.addEventListener("pause", onPause);
-    document.addEventListener("fullscreenchange", onFullscreenChange);
+    // Event listener registry for easier management
+    const eventListeners = [
+      { target: video, event: "timeupdate", handler: updateProgress },
+      { target: video, event: "loadedmetadata", handler: updateDuration },
+      { target: video, event: "loadeddata", handler: updateDuration },
+      { target: video, event: "durationchange", handler: updateDuration },
+      { target: video, event: "canplay", handler: updateDuration },
+      { target: video, event: "ended", handler: handleEnded },
+      { target: video, event: "play", handler: handlePlay },
+      { target: video, event: "pause", handler: handlePause },
+      {
+        target: document,
+        event: "fullscreenchange",
+        handler: handleFullscreenChange,
+      },
+    ];
+
+    // Add all event listeners
+    eventListeners.forEach(({ target, event, handler }) => {
+      target.addEventListener(event, handler);
+    });
 
     // Force load if video is ready
     if (video.readyState >= 1) {
@@ -105,20 +94,15 @@ const VideoPlayer = () => {
       video.load();
     }
 
+    // Cleanup all event listeners
     return () => {
-      video.removeEventListener("timeupdate", updateProgress);
-      video.removeEventListener("loadedmetadata", onLoadedMetadata);
-      video.removeEventListener("loadeddata", onLoadedData);
-      video.removeEventListener("durationchange", onDurationChange);
-      video.removeEventListener("canplay", onCanPlay);
-      video.removeEventListener("ended", onEnded);
-      video.removeEventListener("play", onPlay);
-      video.removeEventListener("pause", onPause);
-      document.removeEventListener("fullscreenchange", onFullscreenChange);
+      eventListeners.forEach(({ target, event, handler }) => {
+        target.removeEventListener(event, handler);
+      });
     };
-  }, [recordedUrl]);
+  }, [recordedUrl, getDuration]);
 
-  const togglePlay = async () => {
+  const togglePlay = useCallback(async () => {
     const video = videoRef.current;
     if (!video) return;
 
@@ -131,9 +115,9 @@ const VideoPlayer = () => {
     } catch (err) {
       console.error("Error playing video:", err);
     }
-  };
+  }, [isPlaying]);
 
-  const toggleFullscreen = async () => {
+  const toggleFullscreen = useCallback(async () => {
     if (!containerRef.current) return;
 
     try {
@@ -145,16 +129,7 @@ const VideoPlayer = () => {
     } catch (err) {
       console.error("Error toggling fullscreen:", err);
     }
-  };
-
-  const formatTime = (seconds) => {
-    if (!isFinite(seconds) || isNaN(seconds)) {
-      return "0:00";
-    }
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
+  }, []);
 
   return (
     <div
