@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 /**
  * Custom hook to manage localStorage with React state
@@ -21,28 +21,48 @@ export const useLocalStorage = (key, initialValue) => {
     }
   });
 
+  // Track if we're currently updating to avoid loops
+  const isUpdatingRef = useRef(false);
+
   // Update localStorage when state changes
   useEffect(() => {
+    // Skip if we're currently updating to avoid unnecessary writes
+    if (isUpdatingRef.current) {
+      isUpdatingRef.current = false;
+      return;
+    }
+
     try {
       if (storedValue === null || storedValue === undefined) {
         localStorage.removeItem(key);
       } else {
-        localStorage.setItem(key, JSON.stringify(storedValue));
+        const serialized = JSON.stringify(storedValue);
+        // Only update if value actually changed
+        const current = localStorage.getItem(key);
+        if (current !== serialized) {
+          localStorage.setItem(key, serialized);
+        }
       }
     } catch (error) {
       console.error(`Error setting localStorage key "${key}":`, error);
     }
   }, [key, storedValue]);
 
+  // Wrapped setter that updates the ref
+  const setValue = useCallback((value) => {
+    isUpdatingRef.current = true;
+    setStoredValue(value);
+  }, []);
+
   // Function to remove item from localStorage
-  const removeValue = () => {
+  const removeValue = useCallback(() => {
     try {
       localStorage.removeItem(key);
       setStoredValue(null);
     } catch (error) {
       console.error(`Error removing localStorage key "${key}":`, error);
     }
-  };
+  }, [key]);
 
-  return [storedValue, setStoredValue, removeValue];
+  return [storedValue, setValue, removeValue];
 };
