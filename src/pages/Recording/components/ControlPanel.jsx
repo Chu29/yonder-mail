@@ -1,5 +1,6 @@
 import { Camera, Circle, Square, Pause, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useCallback } from "react";
 import { useRecording } from "../../../context/RecordingContext";
 
 const ControlPanel = () => {
@@ -14,7 +15,7 @@ const ControlPanel = () => {
     flipCamera,
   } = useRecording();
 
-  const handleRecordToggle = async () => {
+  const handleRecordToggle = useCallback(async () => {
     if (!isRecording) {
       await startRecording();
     } else if (isPaused) {
@@ -22,16 +23,16 @@ const ControlPanel = () => {
     } else {
       pauseRecording();
     }
-  };
+  }, [isRecording, isPaused, startRecording, pauseRecording, resumeRecording]);
 
-  const handleFlip = async () => {
+  const handleFlip = useCallback(async () => {
     await flipCamera();
-  };
+  }, [flipCamera]);
 
-  const handleStop = () => {
+  const handleStop = useCallback(() => {
     stopRecording();
     navigate("/preview");
-  };
+  }, [stopRecording, navigate]);
 
   return (
     <div className="flex items-center justify-center py-8 px-4">
