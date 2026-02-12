@@ -1,4 +1,10 @@
-import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const AuthContext = createContext(null);
@@ -17,61 +23,68 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return !!user;
   });
-  const [_isLoading, _setIsLoading] = useState(false);
 
-  const login = async (email) => {
-    try {
-      // TODO: Replace with actual API call
-      const mockUser = {
-        id: "1",
-        email: email,
-        name: email.split("@")[0],
-        createdAt: new Date().toISOString(),
-      };
+  const login = useCallback(
+    async (email) => {
+      try {
+        // TODO: Replace with actual API call
+        const mockUser = {
+          id: "1",
+          email: email,
+          name: email.split("@")[0],
+          createdAt: new Date().toISOString(),
+        };
 
-      setUser(mockUser);
-      setIsAuthenticated(true);
+        setUser(mockUser);
+        setIsAuthenticated(true);
 
-      return { success: true };
-    } catch (error) {
-      console.error("Login error:", error);
-      return { success: false, error: error.message };
-    }
-  };
+        return { success: true };
+      } catch (error) {
+        console.error("Login error:", error);
+        return { success: false, error: error.message };
+      }
+    },
+    [setUser],
+  );
 
-  const signup = async (email, name) => {
-    try {
-      // TODO: Replace with actual API call
-      const mockUser = {
-        id: Date.now().toString(),
-        email: email,
-        name: name || email.split("@")[0],
-        createdAt: new Date().toISOString(),
-      };
+  const signup = useCallback(
+    async (email, name) => {
+      try {
+        // TODO: Replace with actual API call
+        const mockUser = {
+          id: Date.now().toString(),
+          email: email,
+          name: name || email.split("@")[0],
+          createdAt: new Date().toISOString(),
+        };
 
-      setUser(mockUser);
-      setIsAuthenticated(true);
+        setUser(mockUser);
+        setIsAuthenticated(true);
 
-      return { success: true };
-    } catch (error) {
-      console.error("Signup error:", error);
-      return { success: false, error: error.message };
-    }
-  };
+        return { success: true };
+      } catch (error) {
+        console.error("Signup error:", error);
+        return { success: false, error: error.message };
+      }
+    },
+    [setUser],
+  );
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null);
     setIsAuthenticated(false);
-  };
+  }, [setUser]);
 
-  const value = {
-    user,
-    isAuthenticated,
-    isLoading: _isLoading,
-    login,
-    signup,
-    logout,
-  };
+  const value = useMemo(
+    () => ({
+      user,
+      isAuthenticated,
+      login,
+      signup,
+      logout,
+    }),
+    [user, isAuthenticated, login, signup, logout],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
