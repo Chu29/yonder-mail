@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import { useToast } from "../../../context/ToastContext";
 import googleLogo from "../../../assets/google_logo.svg";
 import iosLogo from "../../../assets/ios_logo.svg";
 
 const SigninForm = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleSignin = async () => {
@@ -17,7 +19,7 @@ const SigninForm = () => {
     if (result.success) {
       navigate("/recording");
     } else {
-      alert("Sign in failed. Please try again.");
+      toast.error("Sign in failed. Please try again.");
     }
   };
 
@@ -29,7 +31,7 @@ const SigninForm = () => {
     if (result.success) {
       navigate("/recording");
     } else {
-      alert("Sign in failed. Please try again.");
+      toast.error("Sign in failed. Please try again.");
     }
   };
   return (
