@@ -26,13 +26,13 @@ const Header = () => {
           <ul className="flex items-center gap-4 lg:gap-8">
             <NavLink
               to="/about"
-              className="text-[#111118] text-base lg:text-lg font-medium hover:text-[#6467f2] transition-colors cursor-pointer"
+              className="text-gray-700 text-base lg:text-lg font-medium hover:text-[#6467f2] transition-colors cursor-pointer"
             >
               About
             </NavLink>
             <NavLink
               to="/faqs"
-              className="text-[#111118] text-base lg:text-lg font-medium hover:text-[#6467f2] transition-colors cursor-pointer"
+              className="text-gray-700 text-base lg:text-lg font-medium hover:text-[#6467f2] transition-colors cursor-pointer"
             >
               FAQs
             </NavLink>
@@ -68,13 +68,13 @@ const Header = () => {
         <nav className="md:hidden bg-white border-t border-[#e2e8f0]">
           <ul className="flex flex-col gap-2 px-4 sm:px-6 py-4">
             <li
-              className="text-[#111118] text-base font-medium hover:bg-[#f3f4f6] px-4 py-2 rounded-md transition-colors cursor-pointer"
+              className="text-[#111118] hover:text-[#ffffff] text-base font-medium hover:bg-[#6467f2] px-4 py-2 rounded-md transition-colors cursor-pointer"
               onClick={() => handleNavClick("/about")}
             >
               About
             </li>
             <li
-              className="text-[#111118] text-base font-medium hover:bg-[#f3f4f6] px-4 py-2 rounded-md transition-colors cursor-pointer"
+              className="text-[#111118] hover:text-[#ffffff] text-base font-medium hover:bg-[#6467f2] px-4 py-2 rounded-md transition-colors cursor-pointer"
               onClick={() => handleNavClick("/faqs")}
             >
               FAQs
