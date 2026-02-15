@@ -5,15 +5,18 @@ import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext";
 import { RecordingProvider } from "./context/RecordingContext";
 import { MessageProvider } from "./context/MessageContext";
+import { ToastProvider } from "./context/ToastContext";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthProvider>
-      <MessageProvider>
-        <RecordingProvider>
-          <App />
-        </RecordingProvider>
-      </MessageProvider>
-    </AuthProvider>
+    <ToastProvider>
+      <AuthProvider>
+        <MessageProvider>
+          <RecordingProvider>
+            <App />
+          </RecordingProvider>
+        </MessageProvider>
+      </AuthProvider>
+    </ToastProvider>
   </StrictMode>,
 );
