@@ -1,6 +1,6 @@
 import { Facebook, Github, Linkedin, Twitter } from "lucide-react";
 
-export const SOCIAL_LINKS = [
+const SOCIAL_LINKS = [
   {
     name: "Twitter",
     url: "https://x.com/unku_chu",
@@ -22,3 +22,5 @@ export const SOCIAL_LINKS = [
     icon: Linkedin,
   },
 ];
+
+export { SOCIAL_LINKS };
