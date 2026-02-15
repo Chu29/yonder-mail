@@ -1,7 +1,9 @@
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState } from "react";
 import { Trash2, Calendar, Mail, Clock, Video } from "lucide-react";
 import { useMessages } from "../../../context/MessageContext";
+import { useToast } from "../../../context/ToastContext";
 import { useNavigate } from "react-router";
+import Modal from "../../../components/Modal";
 
 // Date formatting options - reusable constant
 const DATE_FORMAT_OPTIONS = {
@@ -19,8 +21,17 @@ const calculateTimeUntilDelivery = (deliveryDate) => {
 
   if (diffDays < 0) return "DELIVERED";
 
-  const years = Math.floor(diffDays / 365);
-  const months = Math.floor((diffDays % 365) / 30);
+  // Calculate actual calendar months difference
+  const yearsDiff = delivery.getFullYear() - today.getFullYear();
+  const monthsDiff = delivery.getMonth() - today.getMonth();
+  const totalMonths = yearsDiff * 12 + monthsDiff;
+
+  // If delivery day is earlier in the month, subtract 1 month
+  const adjustedMonths =
+    delivery.getDate() < today.getDate() ? totalMonths - 1 : totalMonths;
+
+  const years = Math.floor(adjustedMonths / 12);
+  const months = adjustedMonths % 12;
 
   if (years > 0) return `DELIVERING IN ${years} YEAR${years > 1 ? "S" : ""}`;
   if (months > 0)
@@ -65,6 +76,9 @@ const EmptyState = ({ type }) => {
 
 const MessagesList = ({ activeTab }) => {
   const { messages, deleteMessage } = useMessages();
+  const toast = useToast();
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [messageToDelete, setMessageToDelete] = useState(null);
 
   // Memoize filtered messages to avoid recalculation on every render
   const filteredMessages = useMemo(() => {
@@ -82,14 +96,18 @@ const MessagesList = ({ activeTab }) => {
   }, [messages, activeTab]);
 
   // Memoize delete handler to avoid recreation
-  const handleDelete = useCallback(
-    (messageId) => {
-      if (window.confirm("Are you sure you want to delete this message?")) {
-        deleteMessage(messageId);
-      }
-    },
-    [deleteMessage],
-  );
+  const handleDeleteClick = useCallback((messageId, messageTitle) => {
+    setMessageToDelete({ id: messageId, title: messageTitle });
+    setDeleteModalOpen(true);
+  }, []);
+
+  const handleConfirmDelete = useCallback(() => {
+    if (messageToDelete) {
+      deleteMessage(messageToDelete.id);
+      toast.success("Message deleted successfully!");
+      setMessageToDelete(null);
+    }
+  }, [messageToDelete, deleteMessage, toast]);
 
   if (filteredMessages.length === 0) {
     return <EmptyState type={activeTab} />;
@@ -135,7 +153,10 @@ const MessagesList = ({ activeTab }) => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleDelete(message.id);
+                  handleDeleteClick(
+                    message.id,
+                    message.title || "this message",
+                  );
                 }}
                 className="text-gray-400 hover:text-red-600 transition shrink-0 p-1 hover:bg-red-50 rounded"
                 title="Delete message"
@@ -182,6 +203,21 @@ const MessagesList = ({ activeTab }) => {
           </div>
         </div>
       ))}
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setMessageToDelete(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Message?"
+        message={`Are you sure you want to delete "${messageToDelete?.title}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        confirmStyle="danger"
+      />
     </div>
   );
 };

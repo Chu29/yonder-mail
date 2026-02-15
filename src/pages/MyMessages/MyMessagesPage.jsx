@@ -1,15 +1,26 @@
 import { useState, useMemo } from "react";
-import AppHeader from "../../components/AppHeader";
-import MessagesList from "./components/MessagesList";
-import Footer from "../Home/components/Footer";
-import { Plus, PenSquare } from "lucide-react";
+import { Plus, PenSquare, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useMessages } from "../../context/MessageContext";
+import { useToast } from "../../context/ToastContext";
+import AppHeader from "../../components/AppHeader";
+import MessagesList from "./components/MessagesList";
+import Footer from "../../components/Footer";
+import Modal from "../../components/Modal";
 
 const MyMessagesPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("scheduled");
-  const { messages } = useMessages();
+  const [showClearModal, setShowClearModal] = useState(false);
+  const { messages, clearAllMessages } = useMessages();
+  const toast = useToast();
+
+  const handleClearAllData = () => {
+    clearAllMessages();
+    // Also clear IndexedDB
+    indexedDB.deleteDatabase("YonderMailDB");
+    toast.success("All data cleared successfully!");
+  };
 
   // Calculate statistics
   const stats = useMemo(() => {
@@ -70,13 +81,26 @@ const MyMessagesPage = () => {
             </h1>
             <p className="text-gray-600">{subtitle}</p>
           </div>
-          <button
-            onClick={() => navigate("/recording")}
-            className="flex items-center gap-2 bg-[#6467f2] hover:bg-[#5456d4] text-white font-semibold py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl w-full sm:w-auto justify-center sm:justify-start"
-          >
-            <PenSquare size={20} />
-            <span>Record New Message</span>
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            {/* DEV ONLY: Clear Data Button */}
+            {import.meta.env.DEV && messages.length > 0 && (
+              <button
+                onClick={() => setShowClearModal(true)}
+                className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl w-full sm:w-auto justify-center"
+                title="Development only: Clear all data"
+              >
+                <Trash2 size={20} />
+                <span>Clear All Data</span>
+              </button>
+            )}
+            <button
+              onClick={() => navigate("/recording")}
+              className="flex items-center gap-2 bg-[#6467f2] hover:bg-[#5456d4] text-white font-semibold py-3 px-6 rounded-lg transition shadow-lg hover:shadow-xl w-full sm:w-auto justify-center sm:justify-start"
+            >
+              <PenSquare size={20} />
+              <span>Record New Message</span>
+            </button>
+          </div>
         </div>
 
         {/* Tabs with counts */}
@@ -136,6 +160,18 @@ const MyMessagesPage = () => {
 
       {/* Footer */}
       <Footer />
+
+      {/* Clear All Data Modal */}
+      <Modal
+        isOpen={showClearModal}
+        onClose={() => setShowClearModal(false)}
+        onConfirm={handleClearAllData}
+        title="Clear All Data?"
+        message="This will permanently delete all your messages and recordings. This action cannot be undone. Are you sure you want to continue?"
+        confirmText="Yes, Clear All"
+        cancelText="Cancel"
+        confirmStyle="danger"
+      />
     </div>
   );
 };
