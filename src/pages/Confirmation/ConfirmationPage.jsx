@@ -1,7 +1,7 @@
 import React from "react";
-import AppHeader from "../../components/AppHeader";
 import ConfirmationContent from "./components/ConfirmationContent";
-import Footer from "../Home/components/Footer";
+import AppHeader from "../../components/AppHeader";
+import Footer from "../../components/Footer";
 
 const ConfirmationPage = () => {
   return (

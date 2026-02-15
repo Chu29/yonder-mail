@@ -1,8 +1,37 @@
 import { CheckCircle, Play, Plus, Home, Mail } from "lucide-react";
 import { useNavigate } from "react-router";
+import { useMessages } from "../../../context/MessageContext";
 
 const ConfirmationContent = () => {
   const navigate = useNavigate();
+  const { messages } = useMessages();
+
+  // Get the most recently scheduled message (last one in the array)
+  const lastMessage =
+    messages.length > 0 ? messages[messages.length - 1] : null;
+
+  // Format the delivery date and time
+  const formatDeliveryDateTime = () => {
+    if (!lastMessage?.deliveryDate || !lastMessage?.deliveryTime) {
+      return "Date not set";
+    }
+
+    const date = new Date(lastMessage.deliveryDate);
+    const formattedDate = date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    // Format time (e.g., "09:00" -> "9:00 AM")
+    const [hours, minutes] = lastMessage.deliveryTime.split(":");
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const displayHour = hour % 12 || 12;
+    const formattedTime = `${displayHour}:${minutes} ${ampm}`;
+
+    return `${formattedDate} at ${formattedTime}`;
+  };
 
   return (
     <div className="w-full max-w-2xl space-y-8">
@@ -42,7 +71,7 @@ const ConfirmationContent = () => {
             </h2>
             <p className="text-gray-700">
               Your message will be delivered on{" "}
-              <span className="font-semibold">March 12, 2026 at 09:00</span>
+              <span className="font-semibold">{formatDeliveryDateTime()}</span>
             </p>
             <p className="text-sm text-gray-600">
               We'll keep it safe until then.
