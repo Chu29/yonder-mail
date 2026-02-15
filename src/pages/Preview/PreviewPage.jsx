@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AppHeader from "../../components/AppHeader";
 import VideoPlayer from "./components/VideoPlayer";
 import PreviewActions from "./components/PreviewActions";
-import Footer from "../Home/components/Footer";
+import Footer from "../../components/Footer";
 import { useRecording } from "../../context/RecordingContext";
 import { useMessages } from "../../context/MessageContext";
 
