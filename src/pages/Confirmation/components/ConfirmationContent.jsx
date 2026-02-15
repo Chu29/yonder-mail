@@ -38,11 +38,7 @@ const ConfirmationContent = () => {
       {/* Success Icon */}
       <div className="flex justify-center">
         <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
-          <CheckCircle
-            size={56}
-            className="text-green-500"
-            fill="currentColor"
-          />
+          <CheckCircle size={56} className="text-green-500" />
         </div>
       </div>
 
