@@ -3,6 +3,7 @@ import WebcamPreview from "./components/WebcamPreview";
 import ControlPanel from "./components/ControlPanel";
 import PrivacyNotice from "./components/PrivacyNotice";
 import Timer from "./components/Timer";
+import Footer from "../../components/Footer";
 
 const RecordingPage = () => {
   return (
@@ -26,6 +27,8 @@ const RecordingPage = () => {
         {/* Privacy Notice */}
         <PrivacyNotice />
       </div>
+
+      <Footer />
     </div>
   );
 };
