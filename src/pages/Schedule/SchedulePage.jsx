@@ -1,6 +1,6 @@
 import AppHeader from "../../components/AppHeader";
+import Footer from "../../components/Footer";
 import ScheduleForm from "./components/ScheduleForm";
-import Footer from "../Home/components/Footer";
 
 const SchedulePage = () => {
   return (
