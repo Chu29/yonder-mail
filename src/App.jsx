@@ -9,6 +9,7 @@ import MyMessagesPage from "./pages/MyMessages/MyMessagesPage";
 import AboutPage from "./pages/About/AboutPage";
 import FAQPage from "./pages/FAQ/FAQPage";
 import ToastContainer from "./components/ToastContainer";
+import { Analytics } from "@vercel/analytics/react";
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
         </Routes>
       </BrowserRouter>
       <ToastContainer />
+      <Analytics />
     </>
   );
 };
