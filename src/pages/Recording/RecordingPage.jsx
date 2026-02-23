@@ -1,0 +1,36 @@
+import AppHeader from "../../components/AppHeader";
+import WebcamPreview from "./components/WebcamPreview";
+import ControlPanel from "./components/ControlPanel";
+import PrivacyNotice from "./components/PrivacyNotice";
+import Timer from "./components/Timer";
+import Footer from "../../components/Footer";
+
+const RecordingPage = () => {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <AppHeader />
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        {/* Timer */}
+        <div className="flex justify-center mb-4">
+          <Timer maxDuration={300} />
+        </div>
+
+        {/* Webcam Preview */}
+        <div className="mb-8">
+          <WebcamPreview />
+        </div>
+
+        {/* Control Buttons */}
+        <ControlPanel />
+
+        {/* Privacy Notice */}
+        <PrivacyNotice />
+      </div>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default RecordingPage;

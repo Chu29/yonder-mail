@@ -1,0 +1,88 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
+import { useToast } from "../../../context/ToastContext";
+import googleLogo from "../../../assets/google_logo.svg";
+import iosLogo from "../../../assets/ios_logo.svg";
+
+const SigninForm = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const toast = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleGoogleSignin = async () => {
+    setIsLoading(true);
+    const result = await login("demo@yondermail.com", "demo");
+    setIsLoading(false);
+
+    if (result.success) {
+      navigate("/recording");
+    } else {
+      toast.error("Sign in failed. Please try again.");
+    }
+  };
+
+  const handleAppleSignin = async () => {
+    setIsLoading(true);
+    const result = await login("demo@yondermail.com", "demo");
+    setIsLoading(false);
+
+    if (result.success) {
+      navigate("/recording");
+    } else {
+      toast.error("Sign in failed. Please try again.");
+    }
+  };
+  return (
+    <form className="w-full max-w-md rounded-2xl bg-white px-8 py-10 text-center shadow-[0_10px_40px_rgba(15,23,42,0.08)]">
+      <h3 className="text-2xl font-semibold text-slate-900">
+        Welcome to Yonder
+      </h3>
+      <p className="mt-2 text-sm leading-relaxed text-slate-500">
+        Sign in to start your journey of self-reflection.
+      </p>
+
+      <div className="mt-7 space-y-4">
+        <button
+          type="button"
+          className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={handleGoogleSignin}
+          disabled={isLoading}
+        >
+          <img src={googleLogo} alt="Google" className="h-5 w-5" />
+          {isLoading ? "Signing in..." : "Continue with Google"}
+        </button>
+        <button
+          type="button"
+          className="flex w-full items-center justify-center gap-3 rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={handleAppleSignin}
+          disabled={isLoading}
+        >
+          <img src={iosLogo} alt="Apple" className="h-5 w-5" />
+          {isLoading ? "Signing in..." : "Continue with Apple"}
+        </button>
+      </div>
+
+      <footer className="mt-8 text-xs text-slate-500">
+        By continuing, you agree to our
+        <a
+          href="#"
+          className="mx-1 font-medium text-slate-600 underline underline-offset-4 hover:text-slate-900"
+        >
+          Terms of Service
+        </a>
+        and
+        <a
+          href="#"
+          className="ml-1 font-medium text-slate-600 underline underline-offset-4 hover:text-slate-900"
+        >
+          Privacy Policy
+        </a>
+        .
+      </footer>
+    </form>
+  );
+};
+
+export default SigninForm;
