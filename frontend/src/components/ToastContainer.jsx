@@ -6,7 +6,7 @@ const ToastContainer = () => {
   const { toasts, removeToast } = useToast();
 
   return (
-    <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-3 pointer-events-none max-w-md">
+    <div className="fixed top-4 right-4 z-9999 flex flex-col gap-3 pointer-events-none max-w-md">
       {toasts.map((toast) => (
         <Toast
           key={toast.id}
@@ -64,13 +64,13 @@ const Toast = ({ toast, onClose }) => {
     <div
       className={`${styles.bg} border ${styles.text} rounded-lg shadow-lg p-4 flex items-start gap-3 min-w-[320px] pointer-events-auto animate-slide-in-right`}
     >
-      <div className="flex-shrink-0 mt-0.5">{styles.icon}</div>
+      <div className="shrink-0 mt-0.5">{styles.icon}</div>
       <p className="flex-1 text-sm font-medium leading-relaxed">
         {toast.message}
       </p>
       <button
         onClick={onClose}
-        className="flex-shrink-0 hover:opacity-70 transition"
+        className="shrink-0 hover:opacity-70 transition"
         aria-label="Close notification"
       >
         <X size={18} />
