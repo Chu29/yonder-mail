@@ -13,7 +13,7 @@ const FAQItem = ({ question, answer }) => {
           {question}
         </h3>
         <span
-          className={`text-2xl text-[#6467f2] flex-shrink-0 transition-transform duration-300 ${
+          className={`text-2xl text-[#6467f2] shrink-0 transition-transform duration-300 ${
             isOpen ? "rotate-45" : ""
           }`}
         >
